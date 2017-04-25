@@ -38,7 +38,7 @@ class App
             case Dispatcher::FOUND:
                 $handler = $routeInfo[1];
                 $vars = $routeInfo[2];
-                var_dump($vars);
+                $request->attributes->add($vars);
                 $controller = $handler[0];
                 $controllerInstance = $serviceManager->get($controller);
                 $controllerReflection = new \ReflectionClass($controller);
