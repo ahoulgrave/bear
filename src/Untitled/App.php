@@ -53,6 +53,7 @@ class App
             case Dispatcher::NOT_FOUND:
                 $response = new Response('Not found', Response::HTTP_NOT_FOUND);
                 // Dispatch event
+                // todo: add response to the event
                 $notFoundEvent = new NotFoundEvent($request, $dispatcher);
                 $eventDispatcher->dispatch(NotFoundEvent::EVENT_NAME, $notFoundEvent);
                 $response->send();
@@ -87,6 +88,7 @@ class App
                 $response = $controllerInstance->{sprintf('%sAction', $action)}($request);
 
                 // Fire predispatch event
+                // todo: add response to the event
                 $preDispatchEvent = new PreDispatchEvent($request);
                 $eventDispatcher->dispatch(PreDispatchEvent::EVENT_NAME, $preDispatchEvent);
 
