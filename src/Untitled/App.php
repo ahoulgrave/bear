@@ -28,20 +28,8 @@ class App
         $eventDispatcher = $config['eventDispatcher'] ?? new EventDispatcher();
         if (is_callable($eventDispatcher)) {
             $eventDispatcher = $eventDispatcher($serviceManager);
-        }
-
-        if ($config['listeners'] ?? null && is_array($config['listeners'])) {
-            foreach ($config['listeners'] as $listenerConfig) {
-                $listenerClass = $listenerConfig[0];
-                $listenerMethod = $listenerConfig[1];
-                $listenerPriority = $listenerConfig[2] ?? 1;
-                if ($serviceManager->has($listenerClass)) {
-                    $listener = $serviceManager->get($listenerClass);
-                } else {
-                    $listener = new $listenerClass;
-                }
-                $eventDispatcher->addListener($listenerConfig[1], [$listener, $listenerMethod], $listenerPriority);
-            }
+        } elseif ($serviceManager->has($eventDispatcher)) {
+            $eventDispatcher = $serviceManager->get($eventDispatcher);
         }
 
         // Handle routing
