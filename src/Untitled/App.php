@@ -2,6 +2,8 @@
 namespace Untitled;
 
 use FastRoute\Dispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Untitled\Event\PreDispatchEvent;
 use Zend\ServiceManager\ServiceManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,6 +23,24 @@ class App
 
         $serviceManager = new ServiceManager($config['service_manager']);
 
+        // Prepare event dispatcher
+        $eventDispatcher = new EventDispatcher();
+
+        if ($config['listeners'] ?? null && is_array($config['listeners'])) {
+            foreach ($config['listeners'] as $listenerConfig) {
+                $listenerClass = $listenerConfig[0];
+                $listenerMethod = $listenerConfig[1];
+                $listenerPriority = $listenerConfig[2] ?? 1;
+                if ($serviceManager->has($listenerClass)) {
+                    $listener = $serviceManager->get($listenerClass);
+                } else {
+                    $listener = new $listenerClass;
+                }
+                $eventDispatcher->addListener($listenerConfig[1], [$listener, $listenerMethod], $listenerPriority);
+            }
+        }
+
+        // Handle routing
         $httpMethod = $request->getMethod();
         $uri = $request->getPathInfo();
 
@@ -59,6 +79,11 @@ class App
                 $action = $handler[1];
                 /** @var Response $response */
                 $response = $controllerInstance->{sprintf('%sAction', $action)}($request);
+
+                // Fire predispatch event
+                $preDispatchEvent = new PreDispatchEvent($request);
+                $eventDispatcher->dispatch(PreDispatchEvent::EVENT_NAME, $preDispatchEvent);
+
                 $response->send();
                 break;
         }
