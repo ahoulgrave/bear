@@ -25,7 +25,10 @@ class App
         $serviceManager = new ServiceManager($config['service_manager']);
 
         // Prepare event dispatcher
-        $eventDispatcher = new EventDispatcher();
+        $eventDispatcher = $config['eventDispatcher'] ?? new EventDispatcher();
+        if (is_callable($eventDispatcher)) {
+            $eventDispatcher = $eventDispatcher($serviceManager);
+        }
 
         if ($config['listeners'] ?? null && is_array($config['listeners'])) {
             foreach ($config['listeners'] as $listenerConfig) {
