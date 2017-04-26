@@ -54,13 +54,16 @@ class App
                 $response = new Response('Not found', Response::HTTP_NOT_FOUND);
                 // Dispatch event
                 // todo: add response to the event
+                // todo: remove dispatcher and add route info
                 $notFoundEvent = new NotFoundEvent($request, $dispatcher);
                 $eventDispatcher->dispatch(NotFoundEvent::EVENT_NAME, $notFoundEvent);
                 $response->send();
                 break;
             case Dispatcher::METHOD_NOT_ALLOWED:
                 $allowedMethods = $routeInfo[1];
-                // ... 405 Method Not Allowed
+                // todo: add event with: $request, $response, $routeInfo
+                $methodNotAllowedResponse = new Response('Method not allowed', Response::HTTP_METHOD_NOT_ALLOWED);
+                $methodNotAllowedResponse->send();
                 break;
             case Dispatcher::FOUND:
                 $handler = $routeInfo[1];
@@ -84,8 +87,13 @@ class App
                 }
 
                 $action = $handler[1];
+                $actionMethod = sprintf('%sAction', $action);
                 /** @var Response $response */
-                $response = $controllerInstance->{sprintf('%sAction', $action)}($request);
+                if (method_exists($controllerInstance, $actionMethod)) {
+                    $response = $controllerInstance->{$actionMethod}($request);
+                } else {
+                    $response = new Response('Method not found', Response::HTTP_NOT_FOUND);
+                }
 
                 // Fire predispatch event
                 // todo: add response to the event
