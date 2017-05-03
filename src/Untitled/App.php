@@ -28,7 +28,7 @@ class App
         $eventDispatcher = $config['eventDispatcher'] ?? new EventDispatcher();
         if (is_callable($eventDispatcher)) {
             $eventDispatcher = $eventDispatcher($serviceManager);
-        } elseif ($serviceManager->has($eventDispatcher)) {
+        } elseif (!is_object($eventDispatcher) && $serviceManager->has($eventDispatcher)) {
             $eventDispatcher = $serviceManager->get($eventDispatcher);
         }
 
