@@ -5,6 +5,7 @@ use FastRoute\Dispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Untitled\Event\NotFoundEvent;
 use Untitled\Event\PreDispatchEvent;
+use Untitled\Event\PreResolveEvent;
 use Zend\ServiceManager\ServiceManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,6 +32,8 @@ class App
         } elseif (!is_object($eventDispatcher) && $serviceManager->has($eventDispatcher)) {
             $eventDispatcher = $serviceManager->get($eventDispatcher);
         }
+
+        $eventDispatcher->dispatch(PreResolveEvent::EVENT_NAME);
 
         // Handle routing
         $httpMethod = $request->getMethod();
