@@ -33,7 +33,7 @@ class App
             $eventDispatcher = $serviceManager->get($eventDispatcher);
         }
 
-        $eventDispatcher->dispatch(PreResolveEvent::EVENT_NAME);
+        $eventDispatcher->dispatch(PreResolveEvent::EVENT_NAME, new PreResolveEvent());
 
         // Handle routing
         $httpMethod = $request->getMethod();
