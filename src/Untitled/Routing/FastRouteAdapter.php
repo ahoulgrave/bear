@@ -9,7 +9,7 @@ use FastRoute;
  *
  * @package Untitled\Routing
  */
-class FastRouteAdapter implements RoutingAdapterInterface
+class FastRouteAdapter extends AbstractRoutingAdapter
 {
     /**
      * @var array

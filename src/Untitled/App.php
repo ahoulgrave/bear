@@ -6,6 +6,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use Untitled\Event\NotFoundEvent;
 use Untitled\Event\PreDispatchEvent;
 use Untitled\Event\PreResolveEvent;
+use Untitled\Routing\AbstractRoutingAdapter;
 use Untitled\Routing\RoutingAdapterInterface;
 use Untitled\Routing\RoutingResolution;
 use Zend\ServiceManager\ServiceManager;
@@ -48,6 +49,10 @@ class App
 
         if (!$routingAdapter instanceof RoutingAdapterInterface) {
             throw new \Exception('Are you sure you provided the "routing" config value with a RoutingAdapter?');
+        }
+
+        if ($routingAdapter instanceof AbstractRoutingAdapter) {
+            $routingAdapter->setRequest($request);
         }
 
         $routingResolution = $routingAdapter->resolve($uri, $httpMethod);
