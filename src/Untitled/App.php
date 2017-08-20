@@ -6,6 +6,8 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use Untitled\Event\NotFoundEvent;
 use Untitled\Event\PreDispatchEvent;
 use Untitled\Event\PreResolveEvent;
+use Untitled\Routing\RoutingAdapterInterface;
+use Untitled\Routing\RoutingResolution;
 use Zend\ServiceManager\ServiceManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,8 +20,10 @@ class App
 {
     /**
      * @param array $config
+     *
+     * @throws \Exception
      */
-    public static function init(array $config)
+    public static function init(array $config): void
     {
         $request = Request::createFromGlobals();
 
@@ -40,30 +44,33 @@ class App
         $uri = $request->getPathInfo();
 
         /** @var Dispatcher $dispatcher */
-        $dispatcher = $config['routes'];
+        $routingAdapter = $config['routing'];
 
-        $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
-        switch ($routeInfo[0]) {
-            case Dispatcher::NOT_FOUND:
+        if (!$routingAdapter instanceof RoutingAdapterInterface) {
+            throw new \Exception('Are you sure you provided the "routing" config value with a RoutingAdapter?');
+        }
+
+        $routingResolution = $routingAdapter->resolve($uri, $httpMethod);
+        switch ($routingResolution->getCode()) {
+            case RoutingResolution::NOT_FOUND:
                 $response = new Response('Not found', Response::HTTP_NOT_FOUND);
                 // Dispatch event
                 // todo: add response to the event
                 // todo: remove dispatcher and add route info
-                $notFoundEvent = new NotFoundEvent($request, $dispatcher);
+                $notFoundEvent = new NotFoundEvent($request, $routingAdapter);
                 $eventDispatcher->dispatch(NotFoundEvent::EVENT_NAME, $notFoundEvent);
                 $response->send();
                 break;
-            case Dispatcher::METHOD_NOT_ALLOWED:
-                $allowedMethods = $routeInfo[1];
+            case RoutingResolution::METHOD_NOT_ALLOWED:
+                $allowedMethods = $routingResolution[1];
                 // todo: add event with: $request, $response, $routeInfo
                 $methodNotAllowedResponse = new Response('Method not allowed', Response::HTTP_METHOD_NOT_ALLOWED);
                 $methodNotAllowedResponse->send();
                 break;
-            case Dispatcher::FOUND:
-                $handler = $routeInfo[1];
-                $vars = $routeInfo[2];
+            case RoutingResolution::FOUND:
+                $vars = $routingResolution->getVars();
                 $request->attributes->add($vars);
-                $controller = $handler[0];
+                $controller = $routingResolution->getController();
                 $controllerInstance = $serviceManager->get($controller);
                 $controllerReflection = new \ReflectionClass($controller);
 
@@ -80,7 +87,7 @@ class App
                     }
                 }
 
-                $action = $handler[1];
+                $action = $routingResolution->getAction();
                 $actionMethod = sprintf('%sAction', $action);
                 /** @var Response $response */
                 if (method_exists($controllerInstance, $actionMethod)) {

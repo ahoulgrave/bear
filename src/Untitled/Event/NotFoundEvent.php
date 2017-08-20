@@ -1,8 +1,8 @@
 <?php
 namespace Untitled\Event;
 
-use FastRoute\Dispatcher;
 use Symfony\Component\HttpFoundation\Request;
+use Untitled\Routing\RoutingAdapterInterface;
 
 /**
  * Class NotFoundEvent
@@ -14,28 +14,28 @@ class NotFoundEvent extends RequestAwareEvent
     const EVENT_NAME = 'untitled.not_found';
 
     /**
-     * @var Dispatcher
+     * @var RoutingAdapterInterface
      */
-    private $dispatcher;
+    private $adapter;
 
     /**
      * NotFoundEvent constructor.
      *
-     * @param Request    $request
-     * @param Dispatcher $dispatcher
+     * @param Request                 $request
+     * @param RoutingAdapterInterface $adapter
      */
-    public function __construct(Request $request, Dispatcher $dispatcher)
+    public function __construct(Request $request, RoutingAdapterInterface $adapter)
     {
         parent::__construct($request);
 
-        $this->dispatcher = $dispatcher;
+        $this->adapter = $adapter;
     }
 
     /**
-     * @return Dispatcher
+     * @return RoutingAdapterInterface
      */
-    public function getDispatcher() : Dispatcher
+    public function getAdapter() : RoutingAdapterInterface
     {
-        return $this->dispatcher;
+        return $this->adapter;
     }
 }
