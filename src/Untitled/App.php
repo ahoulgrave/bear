@@ -1,7 +1,6 @@
 <?php
 namespace Untitled;
 
-use FastRoute\Dispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Untitled\Event\NotFoundEvent;
 use Untitled\Event\PreDispatchEvent;
@@ -44,7 +43,6 @@ class App
         $httpMethod = $request->getMethod();
         $uri = $request->getPathInfo();
 
-        /** @var Dispatcher $dispatcher */
         $routingAdapter = $config['routing'];
 
         if (!$routingAdapter instanceof RoutingAdapterInterface) {
