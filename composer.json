@@ -11,8 +11,7 @@
         "zendframework/zend-servicemanager": "^3.3",
         "zeptech/annotations": "^1.1",
         "symfony/http-foundation": "^3.2",
-        "symfony/event-dispatcher": "^3.2",
-        "symfony/routing": "^3.3"
+        "symfony/event-dispatcher": "^3.2"
     },
     "autoload": {
         "psr-4": {"": "src/"}
