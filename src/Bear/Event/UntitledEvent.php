@@ -1,12 +1,12 @@
 <?php
-namespace Untitled\Event;
+namespace Bear\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 
 /**
  * Class UntitledEvent
  *
- * @package Untitled\Event
+ * @package Bear\Event
  */
 class UntitledEvent extends Event
 {

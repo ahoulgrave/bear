@@ -1,10 +1,10 @@
 <?php
-namespace Untitled\Routing;
+namespace Bear\Routing;
 
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Interface Untitled\Routing\RoutingAdapterInterface
+ * Interface Bear\Routing\RoutingAdapterInterface
  *
  */
 interface RoutingAdapterInterface

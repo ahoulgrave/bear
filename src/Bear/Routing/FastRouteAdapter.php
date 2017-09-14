@@ -1,5 +1,5 @@
 <?php
-namespace Untitled\Routing;
+namespace Bear\Routing;
 
 use FastRoute;
 
@@ -7,7 +7,7 @@ use FastRoute;
  * Class FastRouteAdapter
  * todo: decouple this into a separate composer package
  *
- * @package Untitled\Routing
+ * @package Bear\Routing
  */
 class FastRouteAdapter extends AbstractRoutingAdapter
 {

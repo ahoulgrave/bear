@@ -17,7 +17,7 @@ class TestController {
 }
 
 $config = [
-    'routing' => new \Untitled\Routing\FastRouteAdapter([
+    'routing' => new \Bear\Routing\FastRouteAdapter([
         ['/group',[
             ['GET', '/[{name}]', [TestController::class, 'test']],
         ]],
@@ -30,4 +30,4 @@ $config = [
     ],
 ];
 
-\Untitled\App::init($config);
+\Bear\App::init($config);

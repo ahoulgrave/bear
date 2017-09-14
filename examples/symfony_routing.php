@@ -25,7 +25,7 @@ $subCollection->addPrefix('/group');
 $routes->addCollection($subCollection);
 
 $config = [
-    'routing' => new \Untitled\Routing\SymfonyRoutingAdapter($routes),
+    'routing' => new \Bear\Routing\SymfonyRoutingAdapter($routes),
     'service_manager' => [
         'services' => [
             TestController::class => new TestController(),
@@ -33,4 +33,4 @@ $config = [
     ],
 ];
 
-\Untitled\App::init($config);
+\Bear\App::init($config);

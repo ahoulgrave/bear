@@ -1,5 +1,5 @@
 <?php
-namespace Untitled\Routing;
+namespace Bear\Routing;
 
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
@@ -10,7 +10,7 @@ use Symfony\Component\Routing\RouteCollection;
  * Class SymfonyRoutingAdapter
  * todo: decouple this into a separate composer package
  *
- * @package Untitled\Routing
+ * @package Bear\Routing
  */
 class SymfonyRoutingAdapter extends AbstractRoutingAdapter
 {

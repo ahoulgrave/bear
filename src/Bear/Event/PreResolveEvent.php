@@ -1,10 +1,10 @@
 <?php
-namespace Untitled\Event;
+namespace Bear\Event;
 
 /**
  * Class PreResolveEvent
  *
- * @package Untitled\Event
+ * @package Bear\Event
  */
 class PreResolveEvent extends UntitledEvent
 {

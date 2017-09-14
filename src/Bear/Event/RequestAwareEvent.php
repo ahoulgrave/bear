@@ -1,12 +1,12 @@
 <?php
-namespace Untitled\Event;
+namespace Bear\Event;
 
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class RequestAwareEvent
  *
- * @package Untitled\Event
+ * @package Bear\Event
  */
 abstract class RequestAwareEvent extends UntitledEvent
 {

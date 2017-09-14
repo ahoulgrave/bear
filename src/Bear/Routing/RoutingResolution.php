@@ -1,10 +1,10 @@
 <?php
-namespace Untitled\Routing;
+namespace Bear\Routing;
 
 /**
  * Class RoutingResolution
  *
- * @package Untitled\Routing
+ * @package Bear\Routing
  */
 class RoutingResolution
 {

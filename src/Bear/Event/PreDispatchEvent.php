@@ -1,10 +1,10 @@
 <?php
-namespace Untitled\Event;
+namespace Bear\Event;
 
 /**
  * Class PreDispatchEvent
  *
- * @package Untitled\Event
+ * @package Bear\Event
  */
 class PreDispatchEvent extends RequestAwareEvent
 {

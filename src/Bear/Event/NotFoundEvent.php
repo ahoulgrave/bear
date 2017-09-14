@@ -1,13 +1,13 @@
 <?php
-namespace Untitled\Event;
+namespace Bear\Event;
 
 use Symfony\Component\HttpFoundation\Request;
-use Untitled\Routing\RoutingAdapterInterface;
+use Bear\Routing\RoutingAdapterInterface;
 
 /**
  * Class NotFoundEvent
  *
- * @package Untitled\Event
+ * @package Bear\Event
  */
 class NotFoundEvent extends RequestAwareEvent
 {

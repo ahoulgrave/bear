@@ -1,13 +1,13 @@
 <?php
-namespace Untitled;
+namespace Bear;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Untitled\Event\NotFoundEvent;
-use Untitled\Event\PreDispatchEvent;
-use Untitled\Event\PreResolveEvent;
-use Untitled\Routing\AbstractRoutingAdapter;
-use Untitled\Routing\RoutingAdapterInterface;
-use Untitled\Routing\RoutingResolution;
+use Bear\Event\NotFoundEvent;
+use Bear\Event\PreDispatchEvent;
+use Bear\Event\PreResolveEvent;
+use Bear\Routing\AbstractRoutingAdapter;
+use Bear\Routing\RoutingAdapterInterface;
+use Bear\Routing\RoutingResolution;
 use Zend\ServiceManager\ServiceManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
