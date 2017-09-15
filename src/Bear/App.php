@@ -54,6 +54,7 @@ class App
         }
 
         $routingAdapter->init();
+        $routingAdapter->registerService($serviceManager);
 
         $routingResolution = $routingAdapter->resolve($uri, $httpMethod);
         switch ($routingResolution->getCode()) {

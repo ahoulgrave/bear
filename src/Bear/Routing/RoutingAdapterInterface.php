@@ -1,6 +1,7 @@
 <?php
 namespace Bear\Routing;
 
+use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -28,4 +29,11 @@ interface RoutingAdapterInterface
      * @return void
      */
     public function init(): void;
+
+    /**
+     * @param ContainerInterface $container
+     *
+     * @return void
+     */
+    public function registerService(ContainerInterface $container): void;
 }
