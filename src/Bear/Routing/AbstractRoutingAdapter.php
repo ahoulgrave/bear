@@ -27,4 +27,12 @@ abstract class AbstractRoutingAdapter implements RoutingAdapterInterface
     {
         $this->request = $request;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function init(): void
+    {
+        return;
+    }
 }
