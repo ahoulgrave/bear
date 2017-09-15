@@ -3,6 +3,11 @@ namespace Bear\Routing;
 
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class AbstractRoutingAdapter
+ *
+ * @package Bear\Routing
+ */
 abstract class AbstractRoutingAdapter implements RoutingAdapterInterface
 {
     /**
