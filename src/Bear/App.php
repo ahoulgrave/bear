@@ -53,6 +53,8 @@ class App
             $routingAdapter->setRequest($request);
         }
 
+        $routingAdapter->init();
+
         $routingResolution = $routingAdapter->resolve($uri, $httpMethod);
         switch ($routingResolution->getCode()) {
             case RoutingResolution::NOT_FOUND:
