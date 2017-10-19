@@ -33,7 +33,7 @@ class ControllerResolutionEvent extends RequestAwareEvent
     /**
      * @return object
      */
-    public function getController(): object
+    public function getController()
     {
         return $this->controller;
     }
