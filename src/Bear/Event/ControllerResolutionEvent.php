@@ -29,4 +29,12 @@ class ControllerResolutionEvent extends RequestAwareEvent
 
         $this->controller = $controller;
     }
+
+    /**
+     * @return object
+     */
+    public function getController(): object
+    {
+        return $this->controller;
+    }
 }
