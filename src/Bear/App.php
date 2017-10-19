@@ -78,20 +78,6 @@ class App
                 $request->attributes->add($vars);
                 $controller = $routingResolution->getController();
                 $controllerInstance = $serviceManager->get($controller);
-                $controllerReflection = new \ReflectionClass($controller);
-
-                foreach ($controllerReflection->getProperties() as $property) {
-                    $annotation = new Annotations($property);
-                    if ($dependencyIdentifier = $annotation['inject'] ?? null) {
-                        if (class_exists($dependencyIdentifier)) {
-                            $dependencyIdentifier = $dependencyReflection = (new \ReflectionClass($annotation['inject']))->getName();
-                        }
-
-                        $dependency = $serviceManager->get($dependencyIdentifier);
-                        $method = $controllerReflection->getMethod(sprintf('set%s', ucfirst($property->getName())))->getName();
-                        $controllerInstance->{$method}($dependency);
-                    }
-                }
 
                 $action = $routingResolution->getAction();
                 $actionMethod = sprintf('%sAction', $action);
