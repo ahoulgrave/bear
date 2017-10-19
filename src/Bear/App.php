@@ -12,7 +12,6 @@ use Bear\Routing\RoutingResolution;
 use Zend\ServiceManager\ServiceManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use zpt\anno\Annotations;
 
 /**
  * Class App
