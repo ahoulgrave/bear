@@ -1,6 +1,7 @@
 <?php
 namespace Bear;
 
+use Bear\Event\ControllerResolutionEvent;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Bear\Event\NotFoundEvent;
 use Bear\Event\PreDispatchEvent;
@@ -78,6 +79,7 @@ class App
                 $request->attributes->add($vars);
                 $controller = $routingResolution->getController();
                 $controllerInstance = $serviceManager->get($controller);
+                $eventDispatcher->dispatch(ControllerResolutionEvent::EVENT_NAME, new ControllerResolutionEvent($request, $controllerInstance));
 
                 $action = $routingResolution->getAction();
                 $actionMethod = sprintf('%sAction', $action);
