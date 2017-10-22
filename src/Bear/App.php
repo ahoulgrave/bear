@@ -141,20 +141,20 @@ class App
                 $this->request->attributes->add($vars);
                 $controller = $routingResolution->getController();
                 $controllerInstance = $this->serviceManager->get($controller);
-                $this->eventDispatcher->dispatch(ControllerResolutionEvent::EVENT_NAME, new ControllerResolutionEvent($request, $controllerInstance));
+                $this->eventDispatcher->dispatch(ControllerResolutionEvent::EVENT_NAME, new ControllerResolutionEvent($this->request, $controllerInstance));
 
                 $action = $routingResolution->getAction();
                 $actionMethod = sprintf('%sAction', $action);
                 /** @var Response $response */
                 if (method_exists($controllerInstance, $actionMethod)) {
-                    $response = $controllerInstance->{$actionMethod}($request);
+                    $response = $controllerInstance->{$actionMethod}($this->request);
                 } else {
                     $response = new Response('Method not found', Response::HTTP_NOT_FOUND);
                 }
 
                 // Fire predispatch event
                 // todo: add response to the event
-                $preDispatchEvent = new PreDispatchEvent($request);
+                $preDispatchEvent = new PreDispatchEvent($this->request);
                 $this->eventDispatcher->dispatch(PreDispatchEvent::EVENT_NAME, $preDispatchEvent);
 
                 return $response;
