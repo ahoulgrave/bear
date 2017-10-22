@@ -50,12 +50,13 @@ class App
      */
     public function __construct(array $config)
     {
+        $this->config          = $config;
+
         if (!$this->config['serviceManager'] ?? null) {
             throw new \InvalidArgumentException('Please provide a "serviceManager" configuration key');
         }
 
-        $this->config          = $config;
-        $this->serviceManager  = new ServiceManager($config['service_manager']);
+        $this->serviceManager  = new ServiceManager($config['serviceManager']);
         $this->eventDispatcher = $this->buildEventDispatcher();
         $this->routingAdapter  = $this->buildRoutingAdapter();
         $this->request         = Request::createFromGlobals();
