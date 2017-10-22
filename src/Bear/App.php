@@ -99,7 +99,7 @@ class App
      */
     protected function buildRoutingAdapter(): RoutingAdapterInterface
     {
-        $routingAdapter = $config['routing'] ?? null;
+        $routingAdapter = $this->config['routing'] ?? null;
 
         if (!$routingAdapter instanceof RoutingAdapterInterface) {
             throw new \Exception('Are you sure you provided the "routing" config value with a RoutingAdapter?');
