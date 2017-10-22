@@ -119,7 +119,7 @@ class App
         $routingAdapter = $this->routingAdapter;
 
         $routingAdapter->init();
-        $routingAdapter->registerService($$this->serviceManager);
+        $routingAdapter->registerService($this->serviceManager);
 
         $routingResolution = $routingAdapter->resolve($uri, $httpMethod);
         switch ($routingResolution->getCode()) {
