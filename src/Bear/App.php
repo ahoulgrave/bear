@@ -19,42 +19,106 @@ use Symfony\Component\HttpFoundation\Response;
 class App
 {
     /**
+     * @var array
+     */
+    private $config;
+
+    /**
+     * @var ServiceManager
+     */
+    private $serviceManager;
+
+    /**
+     * @var EventDispatcher
+     */
+    private $eventDispatcher;
+
+    /**
+     * @var RoutingAdapterInterface
+     */
+    private $routingAdapter;
+
+    /**
+     * @var Request
+     */
+    private $request;
+
+    /**
      * @param array $config
      *
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
-    public static function init(array $config): void
+    public function __construct(array $config)
     {
-        $request = Request::createFromGlobals();
+        if (!$this->config['serviceManager'] ?? null) {
+            throw new \InvalidArgumentException('Please provide a "serviceManager" configuration key');
+        }
 
-        $serviceManager = new ServiceManager($config['service_manager']);
+        $this->config          = $config;
+        $this->serviceManager  = new ServiceManager($config['service_manager']);
+        $this->eventDispatcher = $this->buildEventDispatcher();
+        $this->routingAdapter  = $this->buildRoutingAdapter();
+        $this->request         = Request::createFromGlobals();
 
+        if ($this->routingAdapter instanceof AbstractRoutingAdapter) {
+            $this->routingAdapter->setRequest($this->request);
+        }
+    }
+
+    /**
+     * @return void
+     */
+    protected function init(): void
+    {
         // Prepare event dispatcher
-        $eventDispatcher = $config['eventDispatcher'] ?? new EventDispatcher();
+        $eventDispatcher = $this->eventDispatcher;
+        $eventDispatcher->dispatch(PreResolveEvent::EVENT_NAME, new PreResolveEvent());
+    }
+
+    /**
+     * @return EventDispatcher
+     */
+    protected function buildEventDispatcher(): EventDispatcher
+    {
+        $serviceManager = $this->serviceManager;
+        $eventDispatcher = $this->config['eventDispatcher'] ?? new EventDispatcher();
         if (is_callable($eventDispatcher)) {
             $eventDispatcher = $eventDispatcher($serviceManager);
         } elseif (!is_object($eventDispatcher) && $serviceManager->has($eventDispatcher)) {
             $eventDispatcher = $serviceManager->get($eventDispatcher);
         }
 
-        $eventDispatcher->dispatch(PreResolveEvent::EVENT_NAME, new PreResolveEvent());
+        return $eventDispatcher;
+    }
 
-        // Handle routing
-        $httpMethod = $request->getMethod();
-        $uri = $request->getPathInfo();
-
-        $routingAdapter = $config['routing'];
+    /**
+     * @return RoutingAdapterInterface
+     *
+     * @throws \Exception
+     */
+    protected function buildRoutingAdapter(): RoutingAdapterInterface
+    {
+        $routingAdapter = $config['routing'] ?? null;
 
         if (!$routingAdapter instanceof RoutingAdapterInterface) {
             throw new \Exception('Are you sure you provided the "routing" config value with a RoutingAdapter?');
         }
 
-        if ($routingAdapter instanceof AbstractRoutingAdapter) {
-            $routingAdapter->setRequest($request);
-        }
+        return $routingAdapter;
+    }
+
+    /**
+     * @return Response
+     */
+    protected function resolveRequest(): Response
+    {
+        $httpMethod = $this->request->getMethod();
+        $uri = $this->request->getPathInfo();
+
+        $routingAdapter = $this->routingAdapter;
 
         $routingAdapter->init();
-        $routingAdapter->registerService($serviceManager);
+        $routingAdapter->registerService($$this->serviceManager);
 
         $routingResolution = $routingAdapter->resolve($uri, $httpMethod);
         switch ($routingResolution->getCode()) {
@@ -63,22 +127,20 @@ class App
                 // Dispatch event
                 // todo: add response to the event
                 // todo: remove dispatcher and add route info
-                $notFoundEvent = new NotFoundEvent($request, $routingAdapter);
-                $eventDispatcher->dispatch(NotFoundEvent::EVENT_NAME, $notFoundEvent);
-                $response->send();
-                break;
+                $notFoundEvent = new NotFoundEvent($this->request, $routingAdapter);
+                $this->eventDispatcher->dispatch(NotFoundEvent::EVENT_NAME, $notFoundEvent);
+                return $response;
             case RoutingResolution::METHOD_NOT_ALLOWED:
                 $allowedMethods = $routingResolution[1];
                 // todo: add event with: $request, $response, $routeInfo
                 $methodNotAllowedResponse = new Response('Method not allowed', Response::HTTP_METHOD_NOT_ALLOWED);
-                $methodNotAllowedResponse->send();
-                break;
+                return $methodNotAllowedResponse;
             case RoutingResolution::FOUND:
                 $vars = $routingResolution->getVars();
-                $request->attributes->add($vars);
+                $this->request->attributes->add($vars);
                 $controller = $routingResolution->getController();
-                $controllerInstance = $serviceManager->get($controller);
-                $eventDispatcher->dispatch(ControllerResolutionEvent::EVENT_NAME, new ControllerResolutionEvent($request, $controllerInstance));
+                $controllerInstance = $this->serviceManager->get($controller);
+                $this->eventDispatcher->dispatch(ControllerResolutionEvent::EVENT_NAME, new ControllerResolutionEvent($request, $controllerInstance));
 
                 $action = $routingResolution->getAction();
                 $actionMethod = sprintf('%sAction', $action);
@@ -92,10 +154,23 @@ class App
                 // Fire predispatch event
                 // todo: add response to the event
                 $preDispatchEvent = new PreDispatchEvent($request);
-                $eventDispatcher->dispatch(PreDispatchEvent::EVENT_NAME, $preDispatchEvent);
+                $this->eventDispatcher->dispatch(PreDispatchEvent::EVENT_NAME, $preDispatchEvent);
 
-                $response->send();
-                break;
+                return $response;
+            default:
+                return new Response(sprintf('Invalid resolution code: %s', $routingResolution->getCode()), Response::HTTP_BAD_REQUEST);
         }
+    }
+
+    /**
+     * @return void
+     */
+    public function run(): void
+    {
+        $this->init();
+        // Handle routing
+        $response = $this->resolveRequest();
+        // todo: add event
+        $response->send();
     }
 }
