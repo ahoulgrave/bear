@@ -110,4 +110,24 @@ class AppTest extends TestCase
 
         $this->assertEquals('Method not found', ob_get_clean());
     }
+
+    /**
+     * @return void
+     */
+    public function testRequiredServiceManager(): void
+    {
+        $this->expectExceptionMessage('Please provide a "serviceManager" configuration key');
+
+        new App([]);
+    }
+
+    /**
+     * @return void
+     */
+    public function testRequiredRoutingAdapter(): void
+    {
+        $this->expectExceptionMessage('Are you sure you provided the "routing" config value with a RoutingAdapter?');
+
+        new App(['serviceManager' => [true]]);
+    }
 }
