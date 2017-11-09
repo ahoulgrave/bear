@@ -13,7 +13,10 @@
         "symfony/event-dispatcher": "^3.2"
     },
     "autoload": {
-        "psr-4": {"Bear\\": "src/"}
+        "psr-4": {"Bear\\": "src/Bear"}
+    },
+    "autoload-dev": {
+        "psr-4": {"Bear\\Tests\\": "tests/"}
     },
     "extra": {
         "branch-alias": {

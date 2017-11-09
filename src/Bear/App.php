@@ -50,7 +50,7 @@ class App
      */
     public function __construct(array $config)
     {
-        $this->config          = $config;
+        $this->config = $config;
 
         if (!$this->config['serviceManager'] ?? null) {
             throw new \InvalidArgumentException('Please provide a "serviceManager" configuration key');
