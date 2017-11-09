@@ -5,13 +5,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class PreDispatchEvent
+ * Class PostDispatchEvent
  *
  * @package Bear\Event
  */
-class PreDispatchEvent extends RequestAwareEvent
+class PostDispatchEvent extends RequestAwareEvent
 {
-    const EVENT_NAME = 'brear.predispatch';
+    const EVENT_NAME = 'bear.postdispatch';
 
     /**
      * @var Response

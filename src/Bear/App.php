@@ -4,7 +4,7 @@ namespace Bear;
 use Bear\Event\ControllerResolutionEvent;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Bear\Event\NotFoundEvent;
-use Bear\Event\PreDispatchEvent;
+use Bear\Event\PostDispatchEvent;
 use Bear\Event\PreResolveEvent;
 use Bear\Routing\AbstractRoutingAdapter;
 use Bear\Routing\RoutingAdapterInterface;
@@ -142,9 +142,9 @@ class App
                     $response = new Response('Method not found', Response::HTTP_NOT_FOUND);
                 }
 
-                // Fire predispatch event
-                $preDispatchEvent = new PreDispatchEvent($this->request, $response);
-                $this->eventDispatcher->dispatch(PreDispatchEvent::EVENT_NAME, $preDispatchEvent);
+                // Fire postdispatch event
+                $postDispatchEvent = new PostDispatchEvent($this->request, $response);
+                $this->eventDispatcher->dispatch(PostDispatchEvent::EVENT_NAME, $postDispatchEvent);
 
                 return $response;
             default:
