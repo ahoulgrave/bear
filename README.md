@@ -19,18 +19,19 @@ composer require ahoulgrave/bear
 <?php
 require 'vendor/autoload.php';
 
+use Bear\App;
+
 $config = [
     'serviceManager' => [
         'services' => [
             MyController::class => new MyController(),
         ]
     ],
-    'routing' => new SymfonyRoutingAdapter(),
+    'routing' => new SymfonyRoutingAdapter($loader, $resource),
 ];
 
 $app = new App($config);
 $app->run();
-
 ```
 
 ## Routing adapters
