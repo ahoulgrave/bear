@@ -134,9 +134,11 @@ class App
                 $this->eventDispatcher->dispatch(ControllerResolutionEvent::EVENT_NAME, new ControllerResolutionEvent($this->request, $controllerInstance));
 
                 $action = $routingResolution->getAction();
-                $actionMethod = sprintf('%sAction', $action);
+
                 /** @var Response $response */
-                if (method_exists($controllerInstance, $actionMethod)) {
+                if (method_exists($controllerInstance, $action)) {
+                    $response = $controllerInstance->{$action}($this->request);
+                } elseif (method_exists($controllerInstance, $actionMethod = sprintf('%sAction', $action))) {
                     $response = $controllerInstance->{$actionMethod}($this->request);
                 } else {
                     $response = new Response('Method not found', Response::HTTP_NOT_FOUND);
