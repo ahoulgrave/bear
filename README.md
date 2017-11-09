@@ -20,6 +20,7 @@ composer require ahoulgrave/bear
 require 'vendor/autoload.php';
 
 use Bear\App;
+use Bear\Routing\SymfonyRoutingAdapter;
 
 $config = [
     'serviceManager' => [
@@ -33,6 +34,8 @@ $config = [
 $app = new App($config);
 $app->run();
 ```
+
+`serviceManager` configuration key must contain valid [Zend Service Manager](https://github.com/zendframework/zend-servicemanager/blob/master/doc/book/configuring-the-service-manager.md) configuration
 
 ## Routing adapters
 You need at least one routing adapter to run an application
