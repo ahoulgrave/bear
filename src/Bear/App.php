@@ -64,16 +64,7 @@ class App
         if ($this->routingAdapter instanceof AbstractRoutingAdapter) {
             $this->routingAdapter->setRequest($this->request);
         }
-    }
 
-    /**
-     * @return void
-     */
-    protected function init(): void
-    {
-        // Prepare event dispatcher
-        $eventDispatcher = $this->eventDispatcher;
-        $eventDispatcher->dispatch(PreResolveEvent::EVENT_NAME, new PreResolveEvent());
     }
 
     /**
@@ -83,6 +74,7 @@ class App
     {
         $serviceManager = $this->serviceManager;
         $eventDispatcher = $this->config['eventDispatcher'] ?? new EventDispatcher();
+
         if (is_callable($eventDispatcher)) {
             $eventDispatcher = $eventDispatcher($serviceManager);
         } elseif (!is_object($eventDispatcher) && $serviceManager->has($eventDispatcher)) {
@@ -118,6 +110,7 @@ class App
 
         $routingAdapter = $this->routingAdapter;
 
+        // move init to constructor
         $routingAdapter->init();
         $routingAdapter->registerService($this->serviceManager);
 
@@ -168,7 +161,7 @@ class App
      */
     public function run(): void
     {
-        $this->init();
+        $this->eventDispatcher->dispatch(PreResolveEvent::EVENT_NAME, new PreResolveEvent());
         // Handle routing
         $response = $this->resolveRequest();
         // todo: add event
