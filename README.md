@@ -15,7 +15,7 @@ composer require ahoulgrave/bear
 ```
 
 ## Usage
-```
+```php
 <?php
 require 'vendor/autoload.php';
 
