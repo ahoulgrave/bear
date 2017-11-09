@@ -10,13 +10,11 @@ class RoutingResolution
 {
     const NOT_FOUND          = 1;
     const FOUND              = 2;
-    const METHOD_NOT_ALLOWED = 3;
-    const UNRESOLVED         = 4;
 
     /**
      * @var int
      */
-    private $code = self::UNRESOLVED;
+    private $code = self::NOT_FOUND;
 
     /**
      * @var array

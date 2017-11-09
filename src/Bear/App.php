@@ -126,11 +126,6 @@ class App
                 }
 
                 return $response;
-            case RoutingResolution::METHOD_NOT_ALLOWED:
-                $allowedMethods = $routingResolution[1];
-                // todo: add event with: $request, $response, $routeInfo
-                $methodNotAllowedResponse = new Response('Method not allowed', Response::HTTP_METHOD_NOT_ALLOWED);
-                return $methodNotAllowedResponse;
             case RoutingResolution::FOUND:
                 $vars = $routingResolution->getVars();
                 $this->request->attributes->add($vars);
