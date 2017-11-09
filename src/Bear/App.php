@@ -64,7 +64,6 @@ class App
         if ($this->routingAdapter instanceof AbstractRoutingAdapter) {
             $this->routingAdapter->setRequest($this->request);
         }
-
     }
 
     /**
@@ -119,10 +118,13 @@ class App
             case RoutingResolution::NOT_FOUND:
                 $response = new Response('Not found', Response::HTTP_NOT_FOUND);
                 // Dispatch event
-                // todo: add response to the event
-                // todo: remove dispatcher and add route info
                 $notFoundEvent = new NotFoundEvent($this->request, $routingAdapter);
                 $this->eventDispatcher->dispatch(NotFoundEvent::EVENT_NAME, $notFoundEvent);
+
+                if ($eventResponse = $notFoundEvent->getResponse()) {
+                    return $eventResponse;
+                }
+
                 return $response;
             case RoutingResolution::METHOD_NOT_ALLOWED:
                 $allowedMethods = $routingResolution[1];

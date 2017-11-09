@@ -3,6 +3,7 @@ namespace Bear\Event;
 
 use Symfony\Component\HttpFoundation\Request;
 use Bear\Routing\RoutingAdapterInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class NotFoundEvent
@@ -11,12 +12,17 @@ use Bear\Routing\RoutingAdapterInterface;
  */
 class NotFoundEvent extends RequestAwareEvent
 {
-    const EVENT_NAME = 'untitled.not_found';
+    const EVENT_NAME = 'bear.not_found';
 
     /**
      * @var RoutingAdapterInterface
      */
     private $adapter;
+
+    /**
+     * @var Response|null
+     */
+    private $response;
 
     /**
      * NotFoundEvent constructor.
@@ -37,5 +43,23 @@ class NotFoundEvent extends RequestAwareEvent
     public function getAdapter() : RoutingAdapterInterface
     {
         return $this->adapter;
+    }
+
+    /**
+     * @return null|Response
+     */
+    public function getResponse(): ?Response
+    {
+        return $this->response;
+    }
+
+    /**
+     * @param null|Response $response
+     *
+     * @return void
+     */
+    public function setResponse($response): void
+    {
+        $this->response = $response;
     }
 }
