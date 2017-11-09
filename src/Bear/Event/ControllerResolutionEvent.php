@@ -31,6 +31,8 @@ class ControllerResolutionEvent extends RequestAwareEvent
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * @return object
      */
     public function getController()

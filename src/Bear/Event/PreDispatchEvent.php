@@ -31,6 +31,8 @@ class PreDispatchEvent extends RequestAwareEvent
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * @return Response
      */
     public function getResponse(): Response
@@ -40,6 +42,8 @@ class PreDispatchEvent extends RequestAwareEvent
 
     /**
      * @param Response $response
+     *
+     * @codeCoverageIgnore
      *
      * @return void
      */
