@@ -158,9 +158,9 @@ class App
     public function run(): void
     {
         $this->eventDispatcher->dispatch(PreResolveEvent::EVENT_NAME, new PreResolveEvent());
-        // Handle routing
+
         $response = $this->resolveRequest();
-        // todo: add event
+
         $response->send();
     }
 }
