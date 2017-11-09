@@ -38,6 +38,8 @@ class NotFoundEvent extends RequestAwareEvent
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * @return RoutingAdapterInterface
      */
     public function getAdapter() : RoutingAdapterInterface
@@ -46,6 +48,8 @@ class NotFoundEvent extends RequestAwareEvent
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * @return null|Response
      */
     public function getResponse(): ?Response
@@ -55,6 +59,8 @@ class NotFoundEvent extends RequestAwareEvent
 
     /**
      * @param null|Response $response
+     *
+     * @codeCoverageIgnore
      *
      * @return void
      */
