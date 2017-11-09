@@ -143,8 +143,7 @@ class App
                 }
 
                 // Fire predispatch event
-                // todo: add response to the event
-                $preDispatchEvent = new PreDispatchEvent($this->request);
+                $preDispatchEvent = new PreDispatchEvent($this->request, $response);
                 $this->eventDispatcher->dispatch(PreDispatchEvent::EVENT_NAME, $preDispatchEvent);
 
                 return $response;
