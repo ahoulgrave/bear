@@ -2,6 +2,7 @@
 namespace Bear;
 
 use Bear\Event\ControllerResolutionEvent;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Bear\Event\NotFoundEvent;
 use Bear\Event\PostDispatchEvent;
@@ -24,7 +25,7 @@ class App
     private $config;
 
     /**
-     * @var ServiceManager
+     * @var ContainerInterface
      */
     private $serviceManager;
 
@@ -56,7 +57,7 @@ class App
             throw new \InvalidArgumentException('Please provide a "serviceManager" configuration key');
         }
 
-        $this->serviceManager  = new ServiceManager($config['serviceManager']);
+        $this->serviceManager  = $config['serviceManager'] instanceof ContainerInterface ? $config['serviceManager'] : new ServiceManager($config['serviceManager']);
         $this->eventDispatcher = $this->buildEventDispatcher();
         $this->routingAdapter  = $this->buildRoutingAdapter();
         $this->request         = Request::createFromGlobals();
@@ -71,13 +72,12 @@ class App
      */
     protected function buildEventDispatcher(): EventDispatcher
     {
-        $serviceManager = $this->serviceManager;
         $eventDispatcher = $this->config['eventDispatcher'] ?? new EventDispatcher();
 
         if (is_callable($eventDispatcher)) {
-            $eventDispatcher = $eventDispatcher($serviceManager);
-        } elseif (!is_object($eventDispatcher) && $serviceManager->has($eventDispatcher)) {
-            $eventDispatcher = $serviceManager->get($eventDispatcher);
+            $eventDispatcher = $eventDispatcher($this->serviceManager);
+        } elseif (!is_object($eventDispatcher) && $this->serviceManager->has($eventDispatcher)) {
+            $eventDispatcher = $this->serviceManager->get($eventDispatcher);
         }
 
         return $eventDispatcher;
