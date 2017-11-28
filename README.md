@@ -21,23 +21,28 @@ require 'vendor/autoload.php';
 
 use Bear\App;
 use Bear\Routing\SymfonyRoutingAdapter;
+use Zend\ServiceManager\ServiceManager;
 
 $config = [
-    'serviceManager' => [
-        'services' => [
-            MyController::class => new MyController(),
-        ]
+    'services' => [
+        MyController::class => new MyController(),
     ],
-    'routing' => new SymfonyRoutingAdapter($loader, $resource),
 ];
 
-$app = new App($config);
+$app = new App(new ServiceManager($config), new SymfonyRoutingAdapter($loader, $resource));
 $app->run();
 ```
 
-`serviceManager` configuration key must contain valid [Zend Service Manager](https://github.com/zendframework/zend-servicemanager/blob/master/doc/book/configuring-the-service-manager.md) configuration
+## Dependency containers
+As first argument, you can provide any PSR-11 Container. Here are some you can use:
+- [Zend Service Manager](https://docs.zendframework.com/zend-servicemanager/)
+- [Symfony DI Component](http://symfony.com/doc/current/components/dependency_injection.html)
+- [Pimple](https://pimple.symfony.com/)
+- [Audra.DI](https://github.com/auraphp/Aura.Di)
+- [PHP DI](http://php-di.org/)
+- [PHP League's Container](http://container.thephpleague.com/)
 
 ## Routing adapters
 You need at least one routing adapter to run an application
-- [Symfony Router Adapter](https://github.com/ahoulgrave/bear-routing-symfony)
-- [FastRoute Router Adapter](https://github.com/ahoulgrave/bear-routing-fastroute)
+- [Symfony Routing Adapter](https://github.com/ahoulgrave/bear-routing-symfony)
+- [FastRoute Routing Adapter](https://github.com/ahoulgrave/bear-routing-fastroute)
