@@ -8,9 +8,9 @@
         }
     ],
     "require": {
-        "zendframework/zend-servicemanager": "^3.3",
         "symfony/http-foundation": "^3.2",
-        "symfony/event-dispatcher": "^3.2"
+        "symfony/event-dispatcher": "^3.2",
+        "psr/container": "^1.0"
     },
     "autoload": {
         "psr-4": {"Bear\\": "src/Bear"}

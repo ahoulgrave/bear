@@ -10,7 +10,6 @@ use Bear\Event\PreResolveEvent;
 use Bear\Routing\AbstractRoutingAdapter;
 use Bear\Routing\RoutingAdapterInterface;
 use Bear\Routing\RoutingResolution;
-use Zend\ServiceManager\ServiceManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -20,14 +19,9 @@ use Symfony\Component\HttpFoundation\Response;
 class App
 {
     /**
-     * @var array
-     */
-    private $config;
-
-    /**
      * @var ContainerInterface
      */
-    private $serviceManager;
+    private $container;
 
     /**
      * @var EventDispatcher
@@ -45,58 +39,27 @@ class App
     private $request;
 
     /**
-     * @param array $config
-     *
-     * @throws \InvalidArgumentException
+     * @param ContainerInterface          $container
+     * @param RoutingAdapterInterface     $routingAdapter
+     * @param string|EventDispatcher|null $eventDispatcher
      */
-    public function __construct(array $config)
+    public function __construct(ContainerInterface $container, RoutingAdapterInterface $routingAdapter, $eventDispatcher = null)
     {
-        $this->config = $config;
-
-        if (!($this->config['serviceManager'] ?? null)) {
-            throw new \InvalidArgumentException('Please provide a "serviceManager" configuration key');
-        }
-
-        $this->serviceManager  = $config['serviceManager'] instanceof ContainerInterface ? $config['serviceManager'] : new ServiceManager($config['serviceManager']);
-        $this->eventDispatcher = $this->buildEventDispatcher();
-        $this->routingAdapter  = $this->buildRoutingAdapter();
+        $this->container       = $container;
+        $this->routingAdapter  = $routingAdapter;
         $this->request         = Request::createFromGlobals();
 
         if ($this->routingAdapter instanceof AbstractRoutingAdapter) {
             $this->routingAdapter->setRequest($this->request);
         }
-    }
 
-    /**
-     * @return EventDispatcher
-     */
-    protected function buildEventDispatcher(): EventDispatcher
-    {
-        $eventDispatcher = $this->config['eventDispatcher'] ?? new EventDispatcher();
-
-        if (is_callable($eventDispatcher)) {
-            $eventDispatcher = $eventDispatcher($this->serviceManager);
-        } elseif (!is_object($eventDispatcher) && $this->serviceManager->has($eventDispatcher)) {
-            $eventDispatcher = $this->serviceManager->get($eventDispatcher);
+        if ($eventDispatcher instanceof EventDispatcher) {
+            $this->eventDispatcher = $eventDispatcher;
+        } elseif (is_string($eventDispatcher) && $this->container->has($eventDispatcher)) {
+            $this->eventDispatcher = $this->container->get($eventDispatcher);
+        } else {
+            $this->eventDispatcher = new EventDispatcher();
         }
-
-        return $eventDispatcher;
-    }
-
-    /**
-     * @return RoutingAdapterInterface
-     *
-     * @throws \Exception
-     */
-    protected function buildRoutingAdapter(): RoutingAdapterInterface
-    {
-        $routingAdapter = $this->config['routing'] ?? null;
-
-        if (!$routingAdapter instanceof RoutingAdapterInterface) {
-            throw new \Exception('Are you sure you provided the "routing" config value with a RoutingAdapter?');
-        }
-
-        return $routingAdapter;
     }
 
     /**
@@ -111,7 +74,7 @@ class App
 
         // move init to constructor
         $routingAdapter->init();
-        $routingAdapter->registerService($this->serviceManager);
+        $routingAdapter->registerService($this->container);
 
         $routingResolution = $routingAdapter->resolve($uri, $httpMethod);
         switch ($routingResolution->getCode()) {
@@ -130,7 +93,7 @@ class App
                 $vars = $routingResolution->getVars();
                 $this->request->attributes->add($vars);
                 $controller = $routingResolution->getController();
-                $controllerInstance = $this->serviceManager->get($controller);
+                $controllerInstance = $this->container->get($controller);
                 $this->eventDispatcher->dispatch(ControllerResolutionEvent::EVENT_NAME, new ControllerResolutionEvent($this->request, $controllerInstance));
 
                 $action = $routingResolution->getAction();
