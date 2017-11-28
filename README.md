@@ -38,7 +38,7 @@ As first argument, you can provide any PSR-11 Container. Here are some you can u
 - [Zend Service Manager](https://docs.zendframework.com/zend-servicemanager/)
 - [Symfony DI Component](http://symfony.com/doc/current/components/dependency_injection.html)
 - [Pimple](https://pimple.symfony.com/)
-- [Audra.DI](https://github.com/auraphp/Aura.Di)
+- [Aura.DI](https://github.com/auraphp/Aura.Di)
 - [PHP DI](http://php-di.org/)
 - [PHP League's Container](http://container.thephpleague.com/)
 
