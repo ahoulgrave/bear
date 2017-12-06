@@ -29,9 +29,20 @@ class AppTest extends TestCase
 
         $appMock = $this
             ->getMockBuilder(App::class)
-            ->setConstructorArgs([new class implements ContainerInterface {
+            ->setConstructorArgs([new class($routingAdapterMock) implements ContainerInterface {
+                private $routingAdapterMock;
+
+                public function __construct($routingAdapterMock)
+                {
+                    $this->routingAdapterMock = $routingAdapterMock;
+                }
+
                 public function get($id)
                 {
+                    if ($id === 'routingAdapter') {
+                        return $this->routingAdapterMock;
+                    }
+
                     return new class {
                         public function testAction(): Response
                         {
@@ -42,9 +53,13 @@ class AppTest extends TestCase
 
                 public function has($id)
                 {
+                    if ($id === 'routingAdapter') {
+                        return true;
+                    }
+
                     return false;
                 }
-            }, $routingAdapterMock])
+            }, 'routingAdapter'])
             ->setMethodsExcept(['run'])
             ->getMock();
 
@@ -68,9 +83,20 @@ class AppTest extends TestCase
 
         $appMock = $this
             ->getMockBuilder(App::class)
-            ->setConstructorArgs([new class implements ContainerInterface {
+            ->setConstructorArgs([new class($routingAdapterMock) implements ContainerInterface {
+                private $routingAdapterMock;
+
+                public function __construct($routingAdapterMock)
+                {
+                    $this->routingAdapterMock = $routingAdapterMock;
+                }
+
                 public function get($id)
                 {
+                    if ($id === 'routingAdapter') {
+                        return $this->routingAdapterMock;
+                    }
+
                     return new class {
                         public function testAction(): Response
                         {
@@ -81,9 +107,13 @@ class AppTest extends TestCase
 
                 public function has($id)
                 {
+                    if ($id === 'routingAdapter') {
+                        return true;
+                    }
+
                     return false;
                 }
-            }, $routingAdapterMock])
+            }, 'routingAdapter'])
             ->setMethodsExcept(['run'])
             ->getMock();
 
