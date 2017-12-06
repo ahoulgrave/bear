@@ -48,7 +48,6 @@ class App
     public function __construct(ContainerInterface $container, string $routingAdapterContainerId, $eventDispatcher = null)
     {
         $this->container       = $container;
-        $this->request         = Request::createFromGlobals();
 
         if (!$this->container->has($routingAdapterContainerId)) {
             throw new \Exception('You need to provide a routing container identifier.');
@@ -60,11 +59,7 @@ class App
             throw new \Exception(sprintf('The routing provider identifier must return an object implementing %s interface.', RoutingAdapterInterface::class));
         }
 
-        $this->routingAdapter  = $routingAdapter;
-
-        if ($this->routingAdapter instanceof AbstractRoutingAdapter) {
-            $this->routingAdapter->setRequest($this->request);
-        }
+        $this->request = $routingAdapter->getRequest();
 
         if ($eventDispatcher instanceof EventDispatcher) {
             $this->eventDispatcher = $eventDispatcher;

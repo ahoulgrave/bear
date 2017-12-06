@@ -26,6 +26,11 @@ interface RoutingAdapterInterface
     public function setRequest(Request $request): void;
 
     /**
+     * @return Request
+     */
+    public function getRequest(): Request;
+
+    /**
      * @return void
      */
     public function init(): void;
