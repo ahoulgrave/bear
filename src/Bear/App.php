@@ -39,9 +39,9 @@ class App
     private $request;
 
     /**
-     * @param ContainerInterface          $container
-     * @param string                      $routingAdapterContainerId
-     * @param string|EventDispatcher|null $eventDispatcher
+     * @param ContainerInterface          $container                 A valid PSR-11 container instance
+     * @param string                      $routingAdapterContainerId A valid container identifier returning a RoutingAdapterInterface instance
+     * @param string|EventDispatcher|null $eventDispatcher           Optional. An EventDispatcher instance or a valid container identifier returning an EventDispatcher instance
      *
      * @throws \Exception
      */
