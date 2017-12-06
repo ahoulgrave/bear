@@ -27,9 +27,17 @@ $config = [
     'services' => [
         MyController::class => new MyController(),
     ],
+    'factories' => [
+        'routingAdapter' => function () {
+            $loader = ...;
+            $resource = ...;
+            
+            return new SymfonyRoutingAdapter($loader, $resource);
+        },
+    ],
 ];
 
-$app = new App(new ServiceManager($config), new SymfonyRoutingAdapter($loader, $resource));
+$app = new App(new ServiceManager($config), 'routingAdapter');
 $app->run();
 ```
 
