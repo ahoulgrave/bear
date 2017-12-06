@@ -34,11 +34,4 @@ interface RoutingAdapterInterface
      * @return void
      */
     public function init(): void;
-
-    /**
-     * @param ContainerInterface $container
-     *
-     * @return void
-     */
-    public function registerService(ContainerInterface $container): void;
 }
