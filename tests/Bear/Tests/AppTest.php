@@ -3,9 +3,11 @@ namespace Bear\Tests;
 
 use Bear\App;
 use Bear\Routing\AbstractRoutingAdapter;
+use Bear\Routing\RoutingAdapterInterface;
 use Bear\Routing\RoutingResolution;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -20,12 +22,31 @@ class AppTest extends TestCase
      */
     public function testRun(): void
     {
-        $routingAdapterMock = $this->getMockForAbstractClass(AbstractRoutingAdapter::class);
-        $routingResolution  = new RoutingResolution();
-        $routingResolution->setCode(RoutingResolution::FOUND);
-        $routingResolution->setAction('test');
+        $routingAdapterMock = new class implements RoutingAdapterInterface {
+            public function resolve(string $uri, string $method): RoutingResolution
+            {
+                $routingResolution  = new RoutingResolution();
+                $routingResolution->setCode(RoutingResolution::FOUND);
+                $routingResolution->setAction('test');
 
-        $routingAdapterMock->method('resolve')->willReturn($routingResolution);
+                return $routingResolution;
+            }
+
+            public function setRequest(Request $request): void
+            {
+                return;
+            }
+
+            public function getRequest(): Request
+            {
+                return Request::createFromGlobals();
+            }
+
+            public function init(): void
+            {
+                return;
+            }
+        };
 
         $appMock = $this
             ->getMockBuilder(App::class)
@@ -74,12 +95,31 @@ class AppTest extends TestCase
      */
     public function testRunWithNonExistingAction(): void
     {
-        $routingAdapterMock = $this->getMockForAbstractClass(AbstractRoutingAdapter::class);
-        $routingResolution  = new RoutingResolution();
-        $routingResolution->setCode(RoutingResolution::FOUND);
-        $routingResolution->setAction('fakeTest');
+        $routingAdapterMock = new class implements RoutingAdapterInterface {
+            public function resolve(string $uri, string $method): RoutingResolution
+            {
+                $routingResolution  = new RoutingResolution();
+                $routingResolution->setCode(RoutingResolution::FOUND);
+                $routingResolution->setAction('fakeTest');
 
-        $routingAdapterMock->method('resolve')->willReturn($routingResolution);
+                return $routingResolution;
+            }
+
+            public function setRequest(Request $request): void
+            {
+                return;
+            }
+
+            public function getRequest(): Request
+            {
+                return Request::createFromGlobals();
+            }
+
+            public function init(): void
+            {
+                return;
+            }
+        };
 
         $appMock = $this
             ->getMockBuilder(App::class)
