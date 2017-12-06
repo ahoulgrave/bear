@@ -59,7 +59,8 @@ class App
             throw new \Exception(sprintf('The routing provider identifier must return an object implementing %s interface.', RoutingAdapterInterface::class));
         }
 
-        $this->request = $routingAdapter->getRequest();
+        $this->request        = $routingAdapter->getRequest();
+        $this->routingAdapter = $routingAdapter;
 
         if ($eventDispatcher instanceof EventDispatcher) {
             $this->eventDispatcher = $eventDispatcher;
@@ -82,7 +83,6 @@ class App
 
         // move init to constructor
         $routingAdapter->init();
-        $routingAdapter->registerService($this->container);
 
         $routingResolution = $routingAdapter->resolve($uri, $httpMethod);
         switch ($routingResolution->getCode()) {
