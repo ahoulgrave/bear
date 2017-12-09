@@ -7,7 +7,6 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use Bear\Event\NotFoundEvent;
 use Bear\Event\PostDispatchEvent;
 use Bear\Event\PreResolveEvent;
-use Bear\Routing\AbstractRoutingAdapter;
 use Bear\Routing\RoutingAdapterInterface;
 use Bear\Routing\RoutingResolution;
 use Symfony\Component\HttpFoundation\Request;
@@ -80,9 +79,6 @@ class App
         $uri = $this->request->getPathInfo();
 
         $routingAdapter = $this->routingAdapter;
-
-        // move init to constructor
-        $routingAdapter->init();
 
         $routingResolution = $routingAdapter->resolve($uri, $httpMethod);
         switch ($routingResolution->getCode()) {
